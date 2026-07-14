@@ -14,21 +14,21 @@ bars:
       acrylic: true
       dark_mode: true
       round_corners: false
-      border_color: None
+      border_color: "system"
     window_flags:
-      always_on_top: false
+      always_on_top: true
       windows_app_bar: true
+      hide_on_fullscreen: true
     dimensions:
       width: "100%"
-      height: 36
+      height: 30
     widgets:
-      left: ["home"]
-      center: ["launchpad", "clock", "weather", "media", "cava"]
+      left: ["home", "quick_launch", "notes"]
+      center: ["clock", "open_meteo", "media"]
       right:
         [
-          "volume",
-          "settings",
-          "power_menu",
+          "cava",
+          "volume"
         ]
 widgets:
   home:
@@ -58,49 +58,116 @@ widgets:
   clock:
     type: "yasb.clock.ClockWidget"
     options:
-      label: "{%a %d %b %H:%M}"
-      label_alt: "{%A, %d %B %Y, %H:%M}"
-      locale: "en-GB" # Langugae for date, you can set your own, example fr_FR
-      timezones: ["Melbourne/Hobart"] #Looking up time zone info from registry
-      #timezones: ["America/Montreal"]
-      callbacks:
-        on_middle: "next_timezone"
-        on_right: "exec cmd.exe /c start ms-clock:"
-      calendar:
-        blur: True
-        round_corners: True
+      label: "<span>{icon}</span> <span>{alarm}</span> {%#I:%M:%S %p}"
+      label_alt: "\uf017 {%d-%m-%y %#H:%M:%S}"
+      locale: "en-AU"
+      update_interval: 1000
+      timezones: [Melbourne/Hobart]
+      icons:
+        clock_01 : "\udb85\udc4b"
+        clock_02 : "\udb85\udc4c"
+        clock_03 : "\udb85\udc4d"
+        clock_04 : "\udb85\udc4e"
+        clock_05 : "\udb85\udc4f"
+        clock_06 : "\udb85\udc50"
+        clock_07 : "\udb85\udc51"
+        clock_08 : "\udb85\udc52"
+        clock_09 : "\udb85\udc53"
+        clock_10 : "\udb85\udc54"
+        clock_11 : "\udb85\udc55"
+        clock_12 : "\udb85\udc56"
+        clock_13 : "\udb85\udc4b"
+        clock_14 : "\udb85\udc4c"
+        clock_15 : "\udb85\udc4d"
+        clock_16 : "\udb85\udc4e"
+        clock_17 : "\udb85\udc4f"
+        clock_18 : "\udb85\udc50"
+        clock_19 : "\udb85\udc51"
+        clock_20 : "\udb85\udc52"
+        clock_21 : "\udb85\udc53"
+        clock_22 : "\udb85\udc54"
+        clock_23 : "\udb85\udc55"
+      alarm_icons:
+        enabled: "\uf0f3"
+        disabled: "\uf0a2"
+        snooze: "\uf1f6"
+      calendar: 
+        blur: true
+        round_corners: true
         round_corners_type: "normal"
-        border_color: "System"
+        border_color: "system"
         alignment: "center"
         direction: "down"
+        offset_top: 6
+        offset_left: 0
         show_holidays: true
         show_week_numbers: true
-        country_code: "PL"
+        show_years: true
+        country_code: "AU"
         holiday_color: "#FF6464"
-  weather:
-    type: "yasb.weather.WeatherWidget"
+        extended: false
+      callbacks:
+        on_left: "toggle_calendar"
+        on_middle: "next_timezone"
+        on_right: "toggle_label"
+      container_padding:
+        top: 0
+        left: 0
+        bottom: 0
+        right: 0
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [ 1, 1 ]
+  bluetooth:
+    type: "yasb.bluetooth.BluetoothWidget"
+    options:
+      label: "<span>{icon}</span> {device_count}"
+      label_alt: "{device_name}"
+      label_no_device: "No devices connected"
+      label_device_separator: ", "
+      max_length: 10
+      max_length_ellipsis: "..."
+      icons: 
+        bluetooth_on: "\udb80\udcaf"
+        bluetooth_off: "\udb80\udcb2"
+        bluetooth_connected: "\udb80\udcb1"
+      device_aliases:
+        - name: "T5.0"
+          alias: "\uf025"
+      callbacks:
+        on_left: "toggle_label"
+        on_right: "exec cmd.exe /c start ms-settings:bluetooth"
+      label_shadow:
+        enabled: false
+        color: "black"
+        radius: 3
+        offset: [ 1, 1 ]
+  open_meteo:
+    type: "yasb.open_meteo.OpenMeteoWidget"
     options:
       label: "<span>{icon}</span> {temp}"
-      label_alt: "<span>{icon}</span> {location}: {temp}, Min {min_temp}, Max {max_temp}, Wind {wind}"
-      api_key: "3bf4cf9a7c3f40d6b31174128242807" # Get your free API key from https://www.weatherapi.com/
-      update_interval: 600 # Update interval in seconds, Min 600 seconds
+      label_alt: "{location}: Min {min_temp}, Max {max_temp}, Humidity {humidity}"
+      tooltip: true
+      update_interval: 600
       hide_decimal: true
-      location: "Melbourne" # You can use "USA Los Angeles 90006" {COUNTRY CITY ZIP_CODE}, or just city.
+      units: "metric"
       callbacks:
         on_left: "toggle_card"
-        on_middle: "toggle_label"
-        on_right: "exec cmd.exe /c start msnweather:"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
       icons:
         sunnyDay: "\ue30d"
         clearNight: "\ue32b"
         cloudyDay: "\ue312"
         cloudyNight: "\ue311"
+        drizzleDay: "\udb81\ude7e"
+        drizzleNight: "\udb81\ude7e"
         rainyDay: "\ue308"
         rainyNight: "\ue333"
         snowyDay: "\ue30a"
         snowyNight: "\ue335"
-        blizzardDay: "\udb83\udf36"
-        blizzardNight: "\udb83\udf36"
         foggyDay: "\ue303"
         foggyNight: "\ue346"
         thunderstormDay: "\ue30f"
@@ -111,15 +178,40 @@ widgets:
         round_corners: true
         round_corners_type: "normal"
         border_color: "system"
-        alignment: "center"
+        alignment: "right"
         direction: "down"
-        icon_size: 64
-        show_hourly_forecast: true # Set to False to disable hourly forecast
-        time_format: "24h" # can be 12h or 24h
+        icon_size: 48
+        show_hourly_forecast: true
+        time_format: "12h"
         hourly_point_spacing: 76
-        hourly_icon_size: 32 # better to set 16, 32 or 64 for better quality
-        icon_smoothing: true # should be true for smoother icon or false for sharper icon if using 16, 32 or 64 for hourly_icon_size
-        temp_line_width: 3 # can be 0 to hide the temperature line
+        hourly_icon_size: 24
+        icon_smoothing: true
+        temp_line_width: 2
+        current_line_color: "#428393"
+        current_line_width: 1
+        current_line_style: "dot"
+        hourly_gradient:
+          enabled: true
+          top_color: "#8EAEE8"
+          bottom_color: "#2A3E68"
+        hourly_forecast_buttons:
+          enabled: true
+          default_view: "temperature"
+          temperature_icon: "\udb81\udd99"
+          rain_icon: "\udb81\udd96"
+          snow_icon: "\udb81\udd98"
+        weather_animation:
+          enabled: true
+          snow_overrides_rain: true
+          temp_line_animation_style: both
+          rain_effect_intensity: 1.0
+          snow_effect_intensity: 1.0
+          scale_with_chance: true
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
   volume:
     type: "yasb.volume.VolumeWidget"
     options:
@@ -168,12 +260,73 @@ widgets:
       gradient_color_1: '#74c7ec'
       gradient_color_2: '#74c7ec'
       gradient_color_3: '#3B6273'
-      bars_number: 100
+      bars_number: 60
       bar_spacing: 1
       bar_width: 4
       bar_type: "bars_mirrored"
       framerate: 60
       hide_empty: true
+      edge_fade: [0, 5]
+      channels: "stereo"
+      sleep_timer: 5
+      sensitivity: 125
+      reverse: 1
+      
+  active_window:
+    type: "yasb.active_window.ActiveWindowWidget"
+    options:
+      label: "{win[app_name]}"
+      label_alt: "[class_name='{win[class_name]}' exe='{win[process][name]}' hwnd={win[hwnd]}]"
+      label_no_window: ""
+      label_icon: true
+      label_icon_size: 16
+      max_length: 25
+      max_length_ellipsis: "..."
+      monitor_exclusive: true
+      label_shadow:
+        enabled: false
+        color: "black"
+        radius: 3
+        offset: [ 1, 1 ]
+      callbacks:
+        on_left: "do_nothing"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+      animation: 
+        'enabled': true
+        'type': 'fadeInOut' 
+        'duration': 200
+
+  notes:
+    type: "yasb.notes.NotesWidget"
+    options:
+      label: "<span>\uf249</span> {count}"
+      label_alt: "{count} notes"
+      # data_path: "~/Documents/my-notes.json"  # Optional: custom JSON file path
+      menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "System"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
+        max_title_size: 150
+        show_date_time: true
+      icons:
+        note: "\udb82\udd0c"
+        delete: "\ueab8"
+        copy: "\uebcc"
+      callbacks:
+        on_left: "toggle_menu"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [ 1, 1 ]
   settings:
     type: "yasb.applications.ApplicationsWidget"
     options:
@@ -220,6 +373,140 @@ widgets:
         color: "#00000090"
         offset: [0, 2]
         radius: 8
+  quick_launch:
+    type: "yasb.quick_launch.QuickLaunchWidget"
+    options:
+      label: "<span>\uf002</span>"
+      search_placeholder: "Search applications..."
+      max_results: 50
+      show_icons: true
+      icon_size: 32
+      providers:
+        apps:
+          enabled: true
+          prefix: "*"
+          priority: 0
+          show_recent: true
+          max_recent: 5
+          show_description: true
+        bookmarks:
+          enabled: true
+          prefix: "*"
+          priority: 1
+          browser: "all"
+          profile: "Default"
+        calculator:
+          enabled: true
+          prefix: "="
+          priority: 2
+        clipboard_history:
+          enabled: true
+          prefix: "cb"
+          priority: 3
+          max_items: 30
+        color:
+          enabled: true
+          prefix: "c:"
+          priority: 4
+        currency:
+          enabled: true
+          prefix: "$"
+          priority: 5
+        dev_tools:
+          enabled: true
+          prefix: "dev"
+          priority: 6
+        emoji:
+          enabled: true
+          prefix: ":"
+          priority: 7
+        file_search:
+          enabled: true
+          prefix: "/"
+          priority: 8
+          backend: "auto"
+          show_path: true
+        github_notifications:
+          enabled: true
+          prefix: "gh"
+          priority: 9
+          token: "env"
+        hacker_news:
+          enabled: true
+          prefix: "hn"
+          priority: 10
+          cache_ttl: 300
+          max_items: 30
+        ip_info:
+          enabled: true
+          prefix: "ip"
+          priority: 11
+        kill_process:
+          enabled: true
+          prefix: "!"
+          priority: 12
+        port_viewer:
+          enabled: true
+          prefix: "pv"
+          priority: 13
+          tcp_listening_only: true
+          include_established: false
+        settings:
+          enabled: true
+          prefix: "@"
+          priority: 14
+        snippets:
+          enabled: true
+          prefix: ";"
+          priority: 15
+          type_delay: 200
+        system_commands:
+          enabled: true
+          prefix: ">"
+          priority: 16
+        unit_converter:
+          enabled: true
+          prefix: "~"
+          priority: 17
+        vscode:
+          enabled: true
+          prefix: "vsc"
+          priority: 18
+        web_search:
+          enabled: true
+          prefix: "?"
+          priority: 19
+          engine: "google"
+        window_switcher:
+          enabled: true
+          prefix: "win"
+          priority: 20
+        windows_terminal:
+          enabled: true
+          prefix: "wt"
+          priority: 21
+        world_clock:
+          enabled: true
+          prefix: "tz"
+          priority: 22
+        wsl:
+          enabled: true
+          prefix: "wsl"
+          priority: 23
+          show_online: true
+      popup:
+        width: 720
+        height: 480
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "system"
+        dark_mode: true
+      callbacks:
+        on_left: "toggle_quick_launch"
+      keybindings:
+        - keys: "alt+space"
+          action: "toggle_quick_launch"
   cpu:
     type: "yasb.cpu.CpuWidget"
     options:
@@ -357,8 +644,8 @@ widgets:
       class_name: "systray"
       label_collapsed: "◀"
       label_expanded: "▶"
-      label_position: "right" # Can be "left" or "right"
-      icon_size: 16 # Can be any integer between 8 and 64
+      label_position: "left" # Can be "left" or "right"
+      icon_size: 12 # Can be any integer between 8 and 64
       pin_click_modifier: "alt" # Can be "ctrl", "alt" or "shift"
       show_unpinned: false
       show_unpinned_button: true
@@ -368,17 +655,18 @@ widgets:
   media:
     type: "yasb.media.MediaWidget"
     options:
+      hide_empty: true
       label: "{title} - {artist}"
       label_alt: ""
       hide_empty: true
       callbacks:
-        on_left: "toggle_media_menu"
+        on_left: "toggle_play_pause"
         on_middle: "do_nothing"
-        on_right: "do_nothing"
+        on_right: "toggle_media_menu"
       max_field_size:
         label: 30
         label_alt: 30
-      show_thumbnail: false
+      show_thumbnail: true
       controls_only: false
       controls_left: true
       controls_hide: false
@@ -404,15 +692,20 @@ widgets:
         max_title_size: 90
         max_artist_size: 40
         show_source: true
-        show_volume_slider: true
+        show_volume_slider: false
       media_menu_icons:
         play: "\ue768"
         pause: "\ue769"
         prev_track: "\ue892"
         next_track: "\ue893"
       scrolling_label:
-        enabled: false
-        update_interval_ms: 13
-        style: "left" # can be "left", "right", "bounce", "bounce-ease"
-        separator: "    |    "
-        label_padding: 10
+        enabled: true          # Whether to enable the scrolling label.
+        update_interval_ms: 33  # The update interval for the scrolling label in milliseconds.
+        style: "bounce"           # The style of the scrolling label. Can be "left", "right", "bounce", or "bounce-ease".
+        separator: " | "        # The separator between repeating text in "left" or "right" scrolling style.
+        label_padding: 1        # The padding around the label in "bounce" and "bounce-ease" style. By default it's one character on each side.
+        ease_slope: 20          # The easing slope for the bounce effect. Easing curve params: https://www.desmos.com/calculator/j7eamemxzi
+        ease_pos: 0.8           # The easing curve position for the bounce effect.
+        ease_min: 0.5           # The minimum value for the bounce effect easing curve.
+      animation: 
+        {'enabled': true, 'type': 'fadeInOut', 'duration': 200}
